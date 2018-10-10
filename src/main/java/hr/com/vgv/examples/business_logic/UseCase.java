@@ -20,8 +20,7 @@ public interface UseCase
         @Override
         public void storePayloads(UserSource userSource, String message)
         {
-            String userId = userSource.id();
-            User user = fetchOrCreateUser(userSource, userId);
+            User user = fetchOrCreateUser(userSource);
             Iterable<Payload> payloads = adapter.convert(message);
             for (Device device: user.devices()) {
                 device.storePayloads(payloads);
@@ -30,11 +29,12 @@ public interface UseCase
             addToQueue(userSource.topic(), compressed);
         }
 
-        private User fetchOrCreateUser(UserSource userSource, String userId)
+        private User fetchOrCreateUser(UserSource userSource)
         {
+            String id = userSource.id();
             User user;
-            if (this.users.exists(userId)) {
-                user  = this.users.get(userId);
+            if (this.users.exists(id)) {
+                user  = this.users.get(id);
             } else {
                 user = this.users.create(userSource);
             }
@@ -51,6 +51,15 @@ public interface UseCase
 
         private boolean validTopic(String topic) {
             return topic != null && !topic.isEmpty();
+        }
+    }
+
+    class Oop implements UseCase {
+
+        @Override
+        public void storePayloads(UserSource userSource, String message)
+        {
+
         }
     }
 }
