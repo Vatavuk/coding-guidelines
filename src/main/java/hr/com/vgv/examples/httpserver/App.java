@@ -1,4 +1,4 @@
-package hr.com.vgv.examples.business_logic;
+package hr.com.vgv.examples.httpserver;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -21,7 +21,7 @@ public class App {
 
                     byte[] buffer = new byte[10000];
                     int size = input.read(buffer);
-                    String request = new String(Arrays.copyOfRange(buffer, 0, size));
+                    String request = new String(Arrays.copyOfRange(buffer, 0, size + 1));
                     System.out.print(request);
 
                     output.write("HTTP/1.1 200 OK\r\n\r\nHello World!".getBytes());
