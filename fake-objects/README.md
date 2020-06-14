@@ -14,6 +14,8 @@ Fake object represents a simple/fake implementation of an interface used to acco
 
 This project is an example of using fake objects vs mockito.
 
+Use mock framework only when the cost of creating and maintaining a fake object is higher than using the framework.  
+
 #### References
 [Built-in Fake Objects](https://www.yegor256.com/2014/09/23/built-in-fake-objects.html)
 
