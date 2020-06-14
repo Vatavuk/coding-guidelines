@@ -1,6 +1,16 @@
 # Fake Objects
 
-Fakes are objects that have working implementations, but not same as production one. Usually they take some shortcut and have simplified version of production code.
+Don't use mocking frameworks, use fake objects.
+
+Problems with mocked code:
+
+ - it is hard to reason about
+ 
+ - it can become pretty complex very fast
+ 
+ - its very hard to reuse mocked code
+
+Fake object represents a simple/fake implementation of an interface used to accomodate testing scenarios. 
 
 This project is an example of using fake objects vs mockito.
 
