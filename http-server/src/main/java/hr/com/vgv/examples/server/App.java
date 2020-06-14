@@ -1,4 +1,4 @@
-package hr.com.vgv.examples.httpserver;
+package hr.com.vgv.examples.server;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -9,7 +9,8 @@ import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class App {
+public class App
+{
 
     public static void main(String... args) throws Exception {
         final Integer port = 8080;
