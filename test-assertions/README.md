@@ -2,4 +2,4 @@ The more assertions a test has, the less readable and reusable it becomes. Ideal
 In order to achieve this, tests should focus more on matching objects not variables. This way of thinking can significantly reduce amount of duplicated code and
 increase reusability.
 
-This module contains an example using junit for matching variables vs http://hamcrest.org/JavaHamcrest/tutorial[Hamcrest library] for matching objects.
+This module contains an example using junit for matching variables vs [Hamcrest library](http://hamcrest.org/JavaHamcrest/tutorial) for matching objects.
