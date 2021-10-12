@@ -1,7 +1,7 @@
 = Coding Guidelines
-:author: ETK
+:author: Vedran Grgo Vatavuk
 :revnumber: PA1
-:revdate: 2020-06-01
+:revdate: 2021-10-12
 :toc: left
 :imagesdir: images
 :sectnums:
