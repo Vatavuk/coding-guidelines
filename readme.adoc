@@ -1,0 +1,420 @@
+= Coding Guidelines
+:author: ETK
+:revnumber: PA1
+:revdate: 2020-06-01
+:toc: left
+:imagesdir: images
+:sectnums:
+:sectnumlevels: 5
+:xrefstyle: short
+
+== Literature
+ 
+Must read:
+
+ - http://aroma.vn/web/wp-content/uploads/2016/11/code-complete-2nd-edition-v413hav.pdf[Code Complete, second edition]
+ 
+ - https://www.investigatii.md/uploads/resurse/Clean_Code.pdf[Clean Code] 
+ 
+ - https://github.com/muhdkhokhar/test/blob/master/Joshua%20Bloch%20-%20Effective%20Java%20(3rd)%20-%202018.pdf#[Effective Java, third edition] 
+  
+ - https://www.amazon.com/Elegant-Objects-1-Yegor-Bugayenko/dp/1519166915[Elegant Objects (vol I and II)]
+
+ - https://www.oreilly.com/library/view/growing-object-oriented-software/9780321574442/[Growing Object-Oriented Software, Guided by Tests]
+
+ - https://www.amazon.com/Working-Effectively-Legacy-Michael-Feathers/dp/0131177052[Working Effectively With Legacy Code] 
+ 
+The *best way* to write secure and reliable applications:
+
+ - https://github.com/kelseyhightower/nocode[No Code]
+
+
+== Immutability
+
+WARNING: Don't declare objects with mutable state
+
+All instance variables in a class should be declared as *private final*. This will make the class immutable and its instance members hidden
+from the outside.
+
+Why immutable objects?
+
+ - they are simpler to construct, test, and reason about
+ - truly immutable objects are always thread-safe
+ - they help to avoid temporal coupling
+ - their usage is side-effect free
+ - they prevent NULL references
+ - immutable classes tend to be https://github.com/yegor256/size-vs-immutability[smaller] 
+ 
+
+How do we modify a state of an immutable object? We create a new object with a different state.
+
+
+
+*Note:* There are different https://www.yegor256.com/2016/09/07/gradients-of-immutability.html[gradients of immutability]
+
+==== When to Use Mutable Objects
+Start with objects as immutable and only relax the immutability if absolutely necessary. 
+Don't use getters/setters IDE feature automatically, think about how the class is used and only provide the mutability that is absolutely necessary.
+
+Few examples of when to use mutable classes:
+
+ - for data deserialization (dto objects). Deserialization libraries often require setter methods on deserialized objects.
+ 
+ - for complex objects where creating new objects comes at a cost of degradation in performance and maintainability, for example tree like structures 
+
+==== References
+
+https://www.yegor256.com/2014/06/09/objects-should-be-immutable.html[Objects should be immutable]
+
+https://www.youtube.com/watch?v=FQERMVABRrQ[VIDEO - The Power and Practicality of Immutability by Venkat Subramaniam]
+
+https://www.youtube.com/watch?v=APUCMSPiNh4[VIDEO - Refactoring to Immutability by Kevlin Henney]
+
+
+== Program to an Interface
+
+WARNING: Don't inject concrete classes to objects
+
+Classes should communicate with each other through interfaces/contracts. This is particulary important in https://en.wikipedia.org/wiki/Dependency_injection[dependency injection] where we always want to
+pass an interface through a constructor and not a concrete class.
+
+Why interfaces?
+
+ - enables https://en.wikipedia.org/wiki/Loose_coupling[loose coupling] 
+ 
+ - enables https://en.wikipedia.org/wiki/Dependency_inversion_principle[dependency inversion] for module decoupling 
+   
+ - objects that are working with a contract are testable
+ 
+ - objects that implement interface are extendable via https://en.wikipedia.org/wiki/Decorator_pattern[decoration]
+
+==== When to inject concrete class
+It is ok to inject concrete classes for low level implementation design that usualy involves methods that process data 
+in a side-effect free way. For example, string processing, data parsing etc...
+
+==== References
+
+https://stackoverflow.com/questions/383947/what-does-it-mean-to-program-to-an-interface[What does it mean to program to an interface]
+
+https://www.amazon.com/Design-Patterns-Elements-Reusable-Object-Oriented/dp/0201633612[Design Patterns - Gang of Four, Chapter 1]
+
+== Instanceof and Type Casting
+
+WARNING: Don't use instanceof and type castings
+
+These are https://www.yegor256.com/2015/04/02/class-casting-is-anti-pattern.html[code smells], use https://en.wikipedia.org/wiki/Polymorphism_(computer_science)[polymorphism] instead.
+
+*Note:* It's not entirely possible to avoid them, they are normally used for exception handling, annotation processing, and in integration with third party libraries that
+relies on the generic `Object` class.
+
+
+== Utility Classes
+
+WARNING: Think twice before creating a utility class
+
+Utility Class, also known as Helper class, is a class, which contains only static methods, it is stateless, and cannot be instantiated. 
+It contains a bunch of related methods, so they can be reused across the application. 
+As an example consider Apache StringUtils, CollectionUtils or java.lang.Math.
+
+===== Problem
+
+* utility classes introduce https://en.wikipedia.org/wiki/Coupling_(computer_programming)[tight coupling] between classes
+
+* utility classes often break https://en.wikipedia.org/wiki/Single-responsibility_principle[single-responsibility principle], they tend 
+to accumulate more and more code which may not be related
+
+* it's harder to test a class that depends on an utility class
+
+===== Example
+Common mistake is to create utility class that relies on some external dependency such as database connection, http client, etc...
+ 
+[source,java]
+----
+DbUtils.insertRecord(record, connection);
+----
+This way all the classes that use `DbUtils` are tightly coupled to `connection` class.
+
+It's better to create a new database object using `connection` as argument in the constructor. That way `connection` class will
+be hidden inside the database object:
+
+[source,java]
+----
+new Database(connection).insertRecord(record);
+----
+
+===== When It's Safe to Use Utility Classes
+
+You can use them for low level implementation design that involves methods that process data 
+in a side-effect free way. For example, string processing, data parsing etc...
+
+== Null Handling
+
+WARNING: Avoid returning NULL 
+
+Why?:
+
+* NullPointerException
+
+* ad-hoc error handling
+
+* slow failing
+
+
+Altertnatives to returning `null`:
+
+* Return a neutral value (empty string, empty collection, empty map, 0 value...)
+
+* Return value wrapped in `Optional` class
+
+* Return a default value
+
+* Throw an exception
+
+
+WARNING: Avoid passing NULL
+
+Unless you are working with an API which expects you to pass `null`, you should avoid passing `null`
+in your code whenever possible. You can either focus your efforts on checking for null or not ever passing null. The more elegant
+solution is to focus on never passing null. By doing this you will end up writting less code and avoid decisions about how to handle
+null inside a method that doesn't have enough context to decide what to do.
+
+===== Example
+One very common example for passing `null` is to create a method which determines its result based on whether an argument is NULL or not.
+[source,java]
+----
+int foo(int bar, Integer multiplier) {
+	if (multiplier == null) return bar * 2;
+	return bar * multiplier;
+}
+----
+Usage of this function allows passing NULL parameter, for instance `foo(4, null);`
+
+It's better to separate `foo` method into two overloaded functions and change `Integer` to a primitive `int`
+to forbid NULL values.
+
+[source,java]
+----
+foo(int bar) {}
+foo (int bar, int multiplier) {}
+----
+
+
+==== Reference
+
+https://www.infoq.com/presentations/Null-References-The-Billion-Dollar-Mistake-Tony-Hoare/[The Billion Dollar Mistake]
+
+https://github.com/SaikrishnaReddy1919/MyBooks/blob/master/%5BPROGRAMMING%5D%5BClean%20Code%20by%20Robert%20C%20Martin%5D.pdf[Clean Code: Chapter 7]
+
+https://www.yegor256.com/2014/05/13/why-null-is-bad.html[Why Null is Bad]
+
+
+
+
+== Class Naming Conventions
+
+WARNING: Don't use *-er* suffixes
+
+WARNING: Don't use *-Impl* suffix
+
+image::naming.png[]
+
+image::naming_ext.png[]
+
+
+
+Avoid https://www.yegor256.com/2015/03/09/objects-end-with-er.html[ER ending names]. Name classes by what they represent, not by what they do. For example, instead of `ApplicationRunner` use `Application.run()`,
+instead of `ConfigurationLoader` use `Configuration.load()`. 
+
+`Impl` suffix is often used when only one implementation of a specific interface exists. For instance, the implementation of an interface named 
+`PatientDao` would be `PatientDaoImpl`. We don't need `Impl` suffix to remind us that the class implements an interface, that is completly redundant.
+It would be better to reveal an implementation detail in the name, for example, `SqlPatientDao` or `PostgresPatientDao`.
+We can go even further and remove `dao` suffix so the end result can look like `SqlPatients` - pretty clean, right? 
+
+==== References
+https://www.youtube.com/watch?v=CzJ94TMPcD8[VIDEO - Giving code a good name by Kevlin Henney]
+
+https://blog.carbonfive.com/ubiquitous-language-the-joy-of-naming/[Ubiquitous language the joy of naming]
+
+https://www.youtube.com/watch?v=WpP4rIhh5e4[VIDEO - Don't Create Objects That End With -ER by Yegor Bugayenko]
+
+http://www.carlopescio.com/2011/04/your-coding-conventions-are-hurting-you.html[Your coding conventions are hurting you]
+
+
+== Comments in Code
+
+WARNING: Don't explain yourself using comments in code
+
+[source,java]
+----
+//check if user can read a resource
+if (user.permissions().canRead(id) || user.roles().contains("admin"))
+----
+
+Use *functions* instead:
+[source,java]
+----
+if (userCanRead(id))
+----
+
+Use comments when you need to explain your intent, to clarify something, or to warn a developer:
+[source,java]
+----
+// This is a very bad hack. It is introduced to overcome class loader problem with Karaf.
+ClassLoader cl = Thread.currentThread().getContextClassLoader();
+Thread.currentThread().setContextClassLoader(null);
+----
+
+==== Javadoc
+
+`Class` and `interface` declarations as well as `interface method` declarations should *always* contain javadoc.
+
+Public and private methods should be commented when additional explanation is needed.
+
+It is also a good practice to add comments to complex variables such as regex patterns.
+
+==== Reference
+https://www.investigatii.md/uploads/resurse/Clean_Code.pdf[Clean Code chapter 4]
+
+== Class Inheritance in Tests
+
+WARNING: Don't use class inheritence in test suites as a way of code reuse. 
+
+WARNING: Don't share test data between tests through class inheritance.
+
+*Inheritance* is the mechanism in Java by which one class is allowed to inherit the features(fields and methods) of another class
+
+*Super Class*: The class whose features are inherited (super class, base class, or parent class).
+
+*Sub Class*: The class that inherits the other class(sub class, derived class, extended class, or child class). 
+The subclass can add its own fields and methods in addition to the superclass fields and methods.
+
+*Reusability*: Inheritance supports the concept of “reusability”, i.e. when we want to create a new class and there is already a class that includes some of the code that we want, we can derive our new class from the existing class.
+
+==== Problem
+
+* God object and Non-reusable code
+** Let's say a test class needs to access a database in order
+to validate behaviour of some part of an application. To share this functionality with another test class, the code is moved to an abstract class to make it accessible from the outside. 
+Methods declared in an abstract class lack appropriate context. They are defined in an artificial class that is nothing but a dummy bag of functions, very similar to utility classes. The main problem is maintainability because such class can quickly
+turn into a https://en.wikipedia.org/wiki/God_object[God object], a well known anti-pattern. The second problem is reusability, it is very hard to reuse methods in abstract class in 
+other test suites. 
+** *Solution*: favor https://en.wikipedia.org/wiki/Composition_over_inheritance[composition over inheritance]. Whenever you need to reuse a piece of code, create appropriate class/service that will encapsulate
+this functionality and inject it into a test class. 
+
+* Tests are not isolated
+** By sharing test data in abstract classes through protected instance variables we make tests less isolated. Any change to one those variables affects multiple 
+tests. These variables are basically https://en.wikipedia.org/wiki/Global_variable[global variables] and should be avoided as much as possible. 
+** *Solution*: Try to define a different set of test data for every test. If you need to share some data do it through private methods or through separate classes.
+
+==== When to Use Inheritance
+Use abstract classes when you need to inject external dependencies/libraries, business objects or other services in tests.
+These objects can be instantiated/composed inside an abstract class so that each derived test class can access them.
+Abstract class is also a good place to define setup methods, pieces of code that needs to be triggered before test execution.   
+
+
+==== Reference
+https://www.javaworld.com/article/2073649/why-extends-is-evil.html[Why extends is evil - Allen Holub]
+
+https://softwareengineering.stackexchange.com/questions/65179/where-does-this-concept-of-favor-composition-over-inheritance-come-from[Where does this concept of favor composition over inheritance comes from]
+
+https://www.geeksforgeeks.org/inheritance-in-java/[Inheritance in java]
+
+== Test Naming
+
+WARNING: Test names should be as descriptive as possible
+
+Test name should express a specific requirement. This requirement should be derived from either a business or a technincal requirement. Unit test case
+represents a small piece of that requirement.
+
+Here is an example of a test method, that verifies successful patient creation, but does not reveal enough information in it's description.
+
+[source,java]
+----
+public void testCreate() { ... }
+----
+
+Use this naming alternatives instead:
+
+[source,java]
+----
+createsPatient() { ... }
+
+shouldCreatePatient() { ... }
+
+testPatientCreation() { ... }
+----
+
+
+
+== Test Assertions
+
+WARNING: Reduce number of assertions per test
+
+The more assertions a test has, the less readable and reusable it becomes. Ideally a test should have only one assert statement. This is often not possible, however we should strive towards this goal.
+In order to achieve this, tests should focus more on matching objects - not variables. This way of thinking can significantly reduce the amount of duplicated code and
+increase reusability. 
+
+Here is an example using junit for matching variables vs http://hamcrest.org/JavaHamcrest/tutorial[Hamcrest library] for matching objects:
+
+[source,java]
+----
+@Test 
+public void retrievesEntityFromDatabase() { 
+	Patient patient = patients.get("patientId");
+	assertEquals(patient.id(), "patientId");
+	assertEquals(patient.name(), "patientName");
+	assertEquals(patient.nurse(), "nurseName");
+	assertTrue(patient.isActive());
+} 
+----
+
+Using Hamcrest:
+----
+@Test 
+public void retrievesPatientFromDatabase() { 
+	Patient patient = patients.get("patientId");
+	assertThat(
+		patient,
+		new PatientEqualTo(patient.builder()
+			.id("patientId")
+			.name("patientName")
+			.nurse("nurseName")
+			.isActive(true)
+		)
+	);
+}
+----
+
+Now imagine you have to assert patient data in multiple tests. In the first example you will have to write assert statements for each test while using
+Hamcrest only once.
+
+Here is the https://github.com/Vatavuk/oop-examples/tree/master/test-assertions[complete example]
+
+== Fake Objects
+
+WARNING: Prefer fakes over mocks
+
+Problems with https://site.mockito.org/[mockito] code:
+
+ - it is hard to reason about
+ 
+ - it can become pretty complex very fast
+ 
+ - its very hard to reuse mocked code
+ 
+ - tests that rely on mocks are inherently coupled to the implementation of the system and are fragile as the result
+ 
+Instead of mockito use https://www.yegor256.com/2014/09/23/built-in-fake-objects.html[fake objects]. Fake object represents a simple/fake implementation of an
+interface used to accomodate testing scenarios. 
+
+Checkout this https://github.com/Vatavuk/oop-examples/tree/master/fake-objects[example] of using fakes vs mockito.
+
+Use mock framework only when the cost of creating and maintaining a fake object is higher than using the framework. It is also advised to use mocks when we don't have direct
+access to a 3pp source code and if interface we are trying to test is complex.  
+
+==== References
+https://blog.pragmatists.com/test-doubles-fakes-mocks-and-stubs-1a7491dfa3da[Test Doubles — Fakes, Mocks and Stubs]
+
+https://www.yegor256.com/2014/09/23/built-in-fake-objects.html[Built in fake objects]
+
+https://tyrrrz.me/blog/fakes-over-mocks[Prefer fakes over mocks]

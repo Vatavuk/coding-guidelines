@@ -1,0 +1,21 @@
+
+
+Immutability
+------------------
+
+MergedPurgeHistoryDto -> unused setter
+
+AggregationTypeTimespanPair -> timestamp null pointer exc
+
+BasicLevelAggregationJobDescriptor -> many parameters
+
+ContentAddressSourceIdentifiers -> this is ok -> serializable
+
+
+
+Program to an interface
+-------------------------
+
+m2mse-test -> 23c80034c96af0085a963fefde379f3306f55608
+
+
