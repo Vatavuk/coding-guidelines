@@ -32,7 +32,7 @@ The *best way* to write secure and reliable applications:
 
 == Immutability
 
-icon:comment[2x] Don't declare objects with mutable state
+:warning: Don't declare objects with mutable state
 
 All instance variables in a class should be declared as *private final*. This will make the class immutable and its instance members hidden
 from the outside.
