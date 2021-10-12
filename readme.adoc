@@ -81,7 +81,7 @@ https://www.youtube.com/watch?v=APUCMSPiNh4[VIDEO - Refactoring to Immutability 
 
 == Program to an Interface
 
-{star} Don't inject concrete classes to objects
+{star} *Don't inject concrete classes to objects*
 
 Classes should communicate with each other through interfaces/contracts. This is particulary important in https://en.wikipedia.org/wiki/Dependency_injection[dependency injection] where we always want to
 pass an interface through a constructor and not a concrete class.
@@ -108,7 +108,7 @@ https://www.amazon.com/Design-Patterns-Elements-Reusable-Object-Oriented/dp/0201
 
 == Instanceof and Type Casting
 
-{star} Don't use instanceof and type castings
+{star} *Don't use instanceof and type castings*
 
 These are https://www.yegor256.com/2015/04/02/class-casting-is-anti-pattern.html[code smells], use https://en.wikipedia.org/wiki/Polymorphism_(computer_science)[polymorphism] instead.
 
@@ -118,7 +118,7 @@ relies on the generic `Object` class.
 
 == Utility Classes
 
-{star} Think twice before creating a utility class
+{star} *Think twice before creating a utility class*
 
 Utility Class, also known as Helper class, is a class, which contains only static methods, it is stateless, and cannot be instantiated. 
 It contains a bunch of related methods, so they can be reused across the application. 
@@ -157,7 +157,7 @@ in a side-effect free way. For example, string processing, data parsing etc...
 
 == Null Handling
 
-{star} Avoid returning NULL 
+{star} *Avoid returning NULL*
 
 Why?:
 
@@ -179,7 +179,7 @@ Altertnatives to returning `null`:
 * Throw an exception
 
 
-{star} Avoid passing NULL
+{star} *Avoid passing NULL*
 
 Unless you are working with an API which expects you to pass `null`, you should avoid passing `null`
 in your code whenever possible. You can either focus your efforts on checking for null or not ever passing null. The more elegant
@@ -220,9 +220,9 @@ https://www.yegor256.com/2014/05/13/why-null-is-bad.html[Why Null is Bad]
 
 == Class Naming Conventions
 
-{star} Don't use *-er* suffixes
+{star} *Don't use -er suffixes*
 
-{star} Don't use *-Impl* suffix
+{star} *Don't use -Impl suffix*
 
 image::naming.png[]
 
@@ -250,7 +250,7 @@ http://www.carlopescio.com/2011/04/your-coding-conventions-are-hurting-you.html[
 
 == Comments in Code
 
-{star} Don't explain yourself using comments in code
+{star} *Don't explain yourself using comments in code*
 
 [source,java]
 ----
@@ -285,9 +285,9 @@ https://www.investigatii.md/uploads/resurse/Clean_Code.pdf[Clean Code chapter 4]
 
 == Class Inheritance in Tests
 
-{star} Don't use class inheritence in test suites as a way of code reuse. 
+{star} *Don't use class inheritence in test suites as a way of code reuse.*
 
-{star} Don't share test data between tests through class inheritance.
+{star} *Don't share test data between tests through class inheritance.*
 
 *Inheritance* is the mechanism in Java by which one class is allowed to inherit the features(fields and methods) of another class
 
@@ -329,7 +329,7 @@ https://www.geeksforgeeks.org/inheritance-in-java/[Inheritance in java]
 
 == Test Naming
 
-{star} Test names should be as descriptive as possible
+{star} *Test names should be as descriptive as possible*
 
 Test name should express a specific requirement. This requirement should be derived from either a business or a technincal requirement. Unit test case
 represents a small piece of that requirement.
@@ -356,7 +356,7 @@ testPatientCreation() { ... }
 
 == Test Assertions
 
-{star} Reduce number of assertions per test
+{star} *Reduce number of assertions per test*
 
 The more assertions a test has, the less readable and reusable it becomes. Ideally a test should have only one assert statement. This is often not possible, however we should strive towards this goal.
 In order to achieve this, tests should focus more on matching objects - not variables. This way of thinking can significantly reduce the amount of duplicated code and
@@ -400,7 +400,7 @@ Here is the https://github.com/Vatavuk/oop-examples/tree/master/test-assertions[
 
 == Fake Objects
 
-{star} Prefer fakes over mocks
+{star} *Prefer fakes over mocks*
 
 Problems with https://site.mockito.org/[mockito] code:
 
