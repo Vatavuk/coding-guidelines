@@ -38,9 +38,8 @@ The *best way* to write secure and reliable applications:
 
 == Immutability
 
-----
-{star} Don't declare objects with mutable state
-----
+{star} *Don't declare objects with mutable state*
+
 
 All instance variables in a class should be declared as *private final*. This will make the class immutable and its instance members hidden
 from the outside.
