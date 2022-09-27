@@ -421,8 +421,10 @@ Use mock framework only when the cost of creating and maintaining a fake object 
 access to a 3pp source code and if interface we are trying to test is complex.  
 
 ==== References
-https://blog.pragmatists.com/test-doubles-fakes-mocks-and-stubs-1a7491dfa3da[Test Doubles — Fakes, Mocks and Stubs]
-
 https://www.yegor256.com/2014/09/23/built-in-fake-objects.html[Built in fake objects]
+
+https://nedbatchelder.com/blog/201206/tldw_stop_mocking_start_testing.html[Stop mocking start testing]
+
+https://blog.pragmatists.com/test-doubles-fakes-mocks-and-stubs-1a7491dfa3da[Test Doubles — Fakes, Mocks and Stubs]
 
 https://tyrrrz.me/blog/fakes-over-mocks[Prefer fakes over mocks]
